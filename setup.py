@@ -3,14 +3,14 @@ from setuptools import setup, find_packages
 with open("README.md", "r") as f:
     readme = f.read()
 
-requirements = ["ipython>=6", "nbformat>=4", "nbconvert>=5", "requests>=2"]
+requirements = ["python>=3", "numpy>=1", "nibabel>=3", "pillow>=7", "matplotlib>=2"]
 
 setup(
     name="wbplot",
     version="0.0.1",
     author="Joshua Burt",
     author_email="joshua.burt@yale.edu",
-    description="A package for automated plotting of neuroimaging maps from Python using Connectome Workbench.",
+    description="A package for automated plotting of neuroimaging maps using Connectome Workbench.",
     long_description=readme,
     long_description_content_type="text/markdown",
     url="https://github.com/jbburt/wbplot",
