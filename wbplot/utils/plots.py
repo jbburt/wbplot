@@ -52,23 +52,3 @@ def check_cmap(cmap):
             '"{}" is not a colormap provided by Connectome Workbench.'.format(
                 cmap))
     return cmap
-
-
-def check_pscalars(pscalars):
-    """
-
-    Parameters
-    ----------
-    pscalars : array_like
-        parcellated scalars
-
-    Returns
-    -------
-    None
-
-    """
-    if not hasattr(pscalars, '__iter__'):
-        raise RuntimeError("pscalars must be an iterable object")
-    if not (len(pscalars) == 180 or len(pscalars) == 360):
-        raise RuntimeError("pscalars must be length 180 (if unilateral) "
-                           "or length 360 (if bilateral)")

@@ -1,5 +1,5 @@
-from wbplot import config, constants
-from wbplot.utils import plots, images
+from . import config, constants
+from .utils import plots, images
 import nibabel as nib
 import matplotlib.pyplot as plt
 from matplotlib import colorbar
@@ -22,7 +22,7 @@ def pscalar(file_out, pscalars, vrange=None, scene_num=1, cmap=None,
     ----------
     file_out : str
         absolute path to filename where image is saved
-    pscalars : array_like
+    pscalars : numpy.ndarray or array_like
         parcel scalar values
     vrange : tuple, default None
         (min, max) of data for plotting
@@ -71,7 +71,7 @@ def save_workbench_image(dscalars, fname, scene=3, cortex_only=False,
 
     Parameters
     ----------
-    dscalars : array_like
+    dscalars : numpy.ndarray or array_like
         dense scalar vector of length config.constants.N_CIFTI_INDEX
     fname : str
         Output filename, saved to outputs directory with extension .png
