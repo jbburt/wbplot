@@ -12,14 +12,14 @@ from matplotlib import cm
 # nib.imageglobals.logger.disabled = True
 
 
-def write_parcellated_image(pscalars, fout, hemisphere=None, vrange=None,
-                            cmap=None):
+def write_parcellated_image(
+        data, fout, hemisphere=None, vrange=None, cmap=None):
     """
     Insert parcellated scalars into a dlabel file.
 
     Parameters
     ----------
-    pscalars : numpy.ndarray
+    data : numpy.ndarray
     fout : str
     hemisphere : 'left' or 'right' or None, default None
         which hemisphere `pscalars` correspond to. for bilateral data use None
@@ -37,7 +37,7 @@ def write_parcellated_image(pscalars, fout, hemisphere=None, vrange=None,
     """
     check_hemisphere(hemisphere=hemisphere)
     pscalars_lr = map_unilateral_to_bilateral(
-        pscalars=pscalars, hemisphere=hemisphere)
+        pscalars=data, hemisphere=hemisphere)
     c = Cifti(constants.DLABEL_FILE)
     c.set_cmap(data=pscalars_lr, cmap=cmap, vrange=vrange)
     c.save(fout=fout)
@@ -94,35 +94,32 @@ def check_hemisphere(hemisphere):
         return None
 
 
-def write_dense_image(dscalars, fname):
+def write_dense_image(dscalars, fout, savedir=constants.DATA_DIR):
 
     """
     Save dense scalars to a NIFTI neuroimaging file for visualization in
-    Connnectome Workbench.
+    Connectome Workbench.
 
     Parameters
     ----------
     dscalars : numpy.ndarray
-        scalar vector of length config.constants.N_CIFTI_INDEX
-    fname : str
-        Output filename, saved to outputs directory w/ extension dscalar.nii
+        dense scalar data to write
+    fout : str
+        output filename. if an extension is provided, it must be .dscalar.nii
+    savedir : str, default constants.DATA_DIR
+        absolute path to directory in which to save the image. to use this
+        function as part of the automated image-generating pipeline, it must be
+        left as its default value
 
     Returns
     -------
-    f : str
-        absolute path to saved file
+    None
 
     """
-    # TODO
     check_dscalars(dscalars)
 
-    if sep in fname:
-        fname = fname.split(sep)[-1]
-
-    ext = ".dscalar.nii"
-    if fname[-12:] != ext:
-        assert ".nii" != fname[-4:] != ".gii"
-        fname += ext
+    if fout[-12:] != ".dscalar.nii":
+        fout += ".dscalar.nii"
 
     new_data = np.copy(dscalars)
 
@@ -138,12 +135,9 @@ def write_dense_image(dscalars, fname):
     # Create and save a new NIFTI2 image object
     new_img = nib.Nifti2Image(
         data_to_write, affine=of.affine, header=of.header)
-    f = join(config.OUTPUT_DIR, fname)
-    nib.save(new_img, f)
-    return f
+    nib.save(new_img, join(savedir, fout))
 
 
-# TODO : finish this; also rewrite as function?
 class Cifti(object):
 
     def __init__(self, image_file):
@@ -170,20 +164,28 @@ class Cifti(object):
         Parameters
         ----------
         data : numpy.ndarray
-        cmap : str
-        vrange : tuple
-        mappable
+            scalar data
+        cmap : str or None, default None
+            colormap; if None, use DEFAULT_CMAP defined in wbplot.config
+        vrange : tuple or None, default None
+            data (min, max) for illustration
+        mappable : Callable[float] or None, default None
+            can be used to override arguments `cmap` and `vrange`, e.g. by
+            specifying your own color mapping object
 
         Returns
         -------
+        None
 
         """
 
         cmap = plots.check_cmap(cmap)
+        vrange = plots.check_vrange(vrange)
 
         # Map data to colors
         if mappable is None:
-            self.vrange = [data.min(), data.max()] if vrange is None else vrange
+            self.vrange = (
+                np.min(data), np.max(data)) if vrange is None else vrange
             cnorm = clrs.Normalize(vmin=self.vrange[0], vmax=self.vrange[1])
             clr_map = cm.ScalarMappable(cmap=cmap, norm=cnorm)
             colors = clr_map.to_rgba(data)

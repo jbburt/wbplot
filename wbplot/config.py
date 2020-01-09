@@ -1,9 +1,7 @@
-from os.path import abspath, dirname, join
+from os.path import join
 from .constants import DATA_DIR
 
 DEFAULT_CMAP = 'RY-BC-BL'  # Red yellow black blue teal
-
-OUTPUT_DIR = dirname(abspath(__file__))
 
 PARCELLATIONS_DIR = join(DATA_DIR, "HumanCorticalParcellations")
 
