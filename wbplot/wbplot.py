@@ -97,34 +97,8 @@ def dscalar(file_out, dscalars, vrange=None, orientation='portrait',
     orientation = plots.check_orientation(orientation)
     images.check_dscalars(dscalars)
 
-    new_data = np.copy(dscalars)
+    # TODO call images.write_dense_image()
 
-    # Load template NIFTI file (into which `dscalars` will be inserted)
-    of = nib.load(constants.DSCALAR_FILE)
-
-    # Load data from the template file
-    temp_data = np.array(of.get_data())
-
-    # # Overwrite existing template data with `dscalars`
-
-    # First, write new data to existing template file
-    data_to_write = new_data.reshape(np.shape(temp_data))
-    new_img = nib.Nifti2Image(data_to_write, affine=of.affine, header=of.header)
-    prefix = constants.DSCALAR_FILE.split(".dscalar.nii")[0]
-    nib.save(new_img, constants.DSCALAR_FILE)
-
-    # Use Workbench's command line utilities to change the color palette. Note
-    # that this command requires saving to a new CIFTI file, which I will do
-    # before overwriting the old file
-    cifti_out = prefix + "_temp.dscalar.nii"
-    cifti_in = constants.DSCALAR_FILE
-    cmd = "wb_command -cifti-palette %s %s %s -palette-name %s" % (
-        cifti_in, "MODE_AUTO_SCALE_PERCENTAGE", cifti_out, cmap)
-    system(cmd)
-
-    # Delete existing template file; rename new file to replace old template
-    remove(cifti_in)
-    rename(cifti_out, cifti_in)
     scene, width, height = plots.map_params_to_scene(
         dtype='pscalars', orientation=orientation, hemisphere=hemisphere)
 
