@@ -3,7 +3,7 @@ from setuptools import setup, find_packages
 with open("README.md", "r") as f:
     readme = f.read()
 
-requirements = ["python>=3", "numpy>=1", "nibabel>=3", "pillow>=7", "matplotlib>=2"]
+requirements = ["python>=3", "numpy>=1", "nibabel==2.1.0", "pillow>=7", "matplotlib>=2"]
 
 setup(
     name="wbplot",

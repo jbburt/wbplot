@@ -2,6 +2,7 @@ from .. import config, constants
 from PIL import Image
 from matplotlib import colors, pyplot as plt, colorbar
 from mpl_toolkits.axes_grid1 import make_axes_locatable
+from matplotlib import cm
 
 
 def make_transparent(img_file):
@@ -49,10 +50,15 @@ def check_cmap(cmap):
     """
     if cmap is None:
         cmap = config.DEFAULT_CMAP
-    elif cmap not in constants.CMAPS:
-        raise RuntimeError(
-            '"{}" is not a colormap provided by Connectome Workbench.'.format(
-                cmap))
+    # elif cmap not in constants.CMAPS:
+    #     #     raise RuntimeError(
+    #     #         '"{}" is not a colormap provided by Connectome Workbench.'.format(
+    #     #             cmap))
+    try:
+        _ = cm.get_cmap(cmap)
+    except ValueError as e:
+        raise ValueError(e)
+
     return cmap
 
 
@@ -82,6 +88,7 @@ def check_vrange(vrange):
 
 def map_params_to_scene(dtype, orientation, hemisphere):
     """
+    TODO
 
     Parameters
     ----------
