@@ -1,8 +1,9 @@
 from os.path import join
 from .constants import DATA_DIR
 
-# DEFAULT_CMAP = 'RY-BC-BL'  # Red yellow black blue teal
-DEFAULT_CMAP = 'magma'
+# DEFAULT_CMAP_WB = 'magma'  # default workbench color palette
+# DEFAULT_CMAP_PLT = 'magma'  # default matplotlib colormap
+# # note magma is one of the few (if not the only) colormaps supported in both
 
 PARCELLATIONS_DIR = join(DATA_DIR, "HumanCorticalParcellations")
 
