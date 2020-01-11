@@ -7,7 +7,7 @@ requirements = ["numpy>=1", "nibabel==2.1.0", "pillow>=7", "matplotlib>=2"]
 
 setup(
     name="wbplot",
-    version="0.0.1",
+    version="0.0.2",
     author="Joshua Burt",
     author_email="joshua.burt@yale.edu",
     description="A package for automated plotting of neuroimaging maps using Connectome Workbench.",
