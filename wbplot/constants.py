@@ -5,6 +5,7 @@ PACKAGE_ROOT = dirname(abspath(__file__))
 DATA_DIR = join(PACKAGE_ROOT, "data")
 DLABEL_FILE = join(DATA_DIR, "ImageParcellated.dlabel.nii")
 DSCALAR_FILE = join(DATA_DIR, "ImageDense.dscalar.nii")
+DSCALAR_BACKUP = join(DATA_DIR, ".ImageDense.dscalar.nii")
 SCENE_FILE = join(DATA_DIR, "Human.scene")
 
 # Available Workbench color palettes

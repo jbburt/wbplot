@@ -1,19 +1,16 @@
 """
-Demonstration of core functionality.
+Save parcellated cortical scalars as an image. Include a colorbar in the plot.
 
 Note: wbplot must be located somewhere in your system PATH environment variable.
 
 """
 
-from wbplot.wbplot import create_map
+from wbplot.wbplot import pscalar
 import matplotlib.pyplot as plt
 import matplotlib.colors as clrs
 from matplotlib import colorbar
 from os.path import join
 import numpy as np
-
-# change this to your desired output directory
-save_dir = "/Users/jbb/Desktop/"
 
 # this code is used to plot 180 left-hemisphere parcellated scalars. it assumes
 # that the order is consistent with the HCP MMP1.0, as defined in the
