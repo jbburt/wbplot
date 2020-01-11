@@ -206,21 +206,21 @@ def check_orientation(orientation):
     return orientation
 
 
+# TODO: remove this once you're sure you don't want to keep it
 # def wb_cbar(cax, vrange, cmap, orientation='horizontal'):
 #     """
-#
 #
 #     Parameters
 #     ----------
 #     cax
 #     vrange
-#     cmap :
+#     cmap
 #     orientation : 'horizontal' or 'vertical'
 #         the orientation of the colorbar
 #
 #     Returns
 #     -------
-#     cbar : :class:colorbar.ColorbarBase
+#     cbar : :class:~`colorbar.ColorbarBase` instance
 #     """
 #     cmap = check_cmap_plt(cmap)
 #     cnorm = colors.Normalize(vmin=vrange[0], vmax=vrange[1])

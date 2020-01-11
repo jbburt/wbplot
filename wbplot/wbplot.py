@@ -20,7 +20,7 @@ def pscalar(file_out, pscalars, orientation='landscape',
         are bilateral), this argument is ignored.
     hemisphere : 'left' or 'right' or None, default None
         which hemisphere `pscalars` correspond to. if bilateral, use None
-    vrange : tuple
+    vrange : tuple or None, default None
         data (min, max) for plotting
     cmap : str, default 'magma'
         MATPLOTLIB colormap to use for plotting
