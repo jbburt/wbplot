@@ -7,7 +7,7 @@ requirements = ["numpy>=1", "nibabel==2.1.0", "pillow>=7", "matplotlib>=2"]
 
 setup(
     name="wbplot",
-    version="1.0.0",
+    version="1.0.1",
     author="Joshua Burt",
     author_email="joshua.burt@yale.edu",
     include_package_data=True,
