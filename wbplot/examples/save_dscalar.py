@@ -5,7 +5,7 @@ Note: wbplot must be located somewhere in your system PATH environment variable.
 
 """
 
-from wbplot.wbplot import dscalar
+from wbplot import dscalar
 from os.path import join
 import numpy as np
 
@@ -66,3 +66,7 @@ dscalar(
     transparent=True)
 # Notice that the transparent argument simply makes the background (ie, the
 # white pixels) transparent.
+
+# If you just want to write your data to a neuroimaging file (and open it in
+# Workbench yourself), see the docs for
+# `wbplot.utils.images.write_dense_image`.

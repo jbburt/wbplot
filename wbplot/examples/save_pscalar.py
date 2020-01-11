@@ -5,7 +5,7 @@ Note: wbplot must be located somewhere in your system PATH environment variable.
 
 """
 
-from wbplot.wbplot import pscalar
+from wbplot import pscalar
 from os.path import join
 import numpy as np
 
@@ -69,3 +69,7 @@ pscalar(
 pscalar(
     file_out=join(root, "test4.png"), pscalars=x, hemisphere='left',
     vrange=(-2, 2), cmap='viridis', orientation='portrait', transparent=True)
+
+# If you just want to write your data to a neuroimaging file (and open it in
+# Workbench yourself), see the docs for
+# `wbplot.utils.images.write_parcellated_image`.
