@@ -48,6 +48,4 @@ Change Log
 ---
 
 * 1.0 Initial release.
-
-=======
-[Joshua B. Burt]: http://joshuabburt.com
+* 1.0.1 Small error in README.
