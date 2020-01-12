@@ -1,5 +1,5 @@
-from . import config, constants
 from .utils import plots, images
+from . import config
 from os import system
 
 
@@ -52,8 +52,8 @@ def pscalar(file_out, pscalars, orientation='landscape',
 
     # Write `pscalars` to the neuroimaging file which is pre-loaded into the
     # scene file, and update the colors for each parcel using the file metadata
-    images.write_parcellated_image(
-        data=pscalars, fout=constants.DLABEL_FILE, cmap=cmap, vrange=vrange)
+    temp_image = images.write_parcellated_image(
+        data=pscalars, fout=None, cmap=cmap, vrange=vrange)
 
     # Map the input parameters to the appropriate scene in the scene file
     scene, width, height = plots.map_params_to_scene(
@@ -62,7 +62,7 @@ def pscalar(file_out, pscalars, orientation='landscape',
     # Call Connectome Workbench's command-line utilities to generate an image
     cmd = 'wb_command -show-scene "{}" {} "{}" {} {}'.format(
         config.SCENE_FILE, scene, file_out, width, height)
-    cmd += " >/dev/null 2>&1"
+    # cmd += " >/dev/null 2>&1"
     system(cmd)
 
     if transparent:  # Make background (defined as white pixels) transparent
@@ -122,8 +122,8 @@ def dscalar(file_out, dscalars, orientation='landscape',
     orientation = plots.check_orientation(orientation)
     images.check_dscalars(dscalars)
 
-    images.write_dense_image(
-        dscalars=dscalars, fout=constants.DSCALAR_FILE, palette=palette,
+    temp_image = images.write_dense_image(
+        dscalars=dscalars, fout=None, palette=palette,
         palette_params=palette_params)
 
     scene, width, height = plots.map_params_to_scene(
@@ -131,7 +131,7 @@ def dscalar(file_out, dscalars, orientation='landscape',
 
     cmd = 'wb_command -show-scene "{}" {} "{}" {} {}'.format(
         config.SCENE_FILE, scene, file_out, width, height)
-    cmd += " >/dev/null 2>&1"
+    # cmd += " >/dev/null 2>&1"
     system(cmd)
 
     if transparent:

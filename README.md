@@ -1,4 +1,4 @@
-# README File for wbplot
+#wbplot
 Automated plotting of neuroimaging maps from Python using [Connectome Workbench](https://www.humanconnectome.org/software/connectome-workbench).
 
 This package is intended for users who want to generate images
@@ -8,8 +8,9 @@ Installation
 ============
 ---
 
-### Step 1. Make sure you have Connectome Workbench installed.
-* If running `wb_view` from a terminal yields 'command not found', see  <https://www.humanconnectome.org/software/connectome-workbench/>
+### Step 1. Make sure you have Connectome Workbench v1.3+ installed.
+* If running `wb_view` from a terminal yields `command not found`, see  <https://www.humanconnectome.org/software/connectome-workbench/>
+* If you have Workbench 1.2 or below installed, you will get an error message
 
 ### Step 2. Install `wbplot` and dependencies.
 * Clone the repository and install manually: `git clone https://github.com/jbburt/wbplot.git`
@@ -49,3 +50,4 @@ Change Log
 
 * 1.0 Initial release.
 * 1.0.1 Small error in README.
+* 1.0.2 Error in MANIFEST.in -- not all necessary data files included in build.

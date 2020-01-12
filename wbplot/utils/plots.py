@@ -2,8 +2,8 @@
 
 from .. import constants
 from PIL import Image
-from matplotlib import colors, pyplot as plt, colorbar
-from mpl_toolkits.axes_grid1 import make_axes_locatable
+# from matplotlib import colors, pyplot as plt, colorbar
+# from mpl_toolkits.axes_grid1 import make_axes_locatable
 from matplotlib import cm
 
 
