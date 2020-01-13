@@ -1,6 +1,9 @@
-from .utils import plots, images
-from . import config
+from wbplot.utils import plots, images
+from wbplot import config
 from os import system
+from os.path import join, exists
+from zipfile import ZipFile
+import tempfile
 
 
 def pscalar(file_out, pscalars, orientation='landscape',
@@ -52,8 +55,19 @@ def pscalar(file_out, pscalars, orientation='landscape',
 
     # Write `pscalars` to the neuroimaging file which is pre-loaded into the
     # scene file, and update the colors for each parcel using the file metadata
-    temp_image = images.write_parcellated_image(
-        data=pscalars, fout=None, cmap=cmap, vrange=vrange)
+    temp_dir = tempfile.gettempdir()
+    temp_cifti = join(temp_dir, "ImageParcellated.dlabel.nii")
+    images.write_parcellated_image(
+        data=pscalars, fout=temp_cifti, cmap=cmap, vrange=vrange)
+
+    # Now copy the scene file & HumanCorticalParcellations directory to the
+    # temp directory as well
+    with ZipFile(config.SCENE_ZIP_FILE, "r") as z:  # unzip to temp dir
+        z.extractall(temp_dir)
+    scene_file = join(temp_dir, "Human.scene")
+    if not exists(scene_file):
+        raise RuntimeError(
+            "scene file was not successfully copied to {}".format(scene_file))
 
     # Map the input parameters to the appropriate scene in the scene file
     scene, width, height = plots.map_params_to_scene(
@@ -61,7 +75,7 @@ def pscalar(file_out, pscalars, orientation='landscape',
 
     # Call Connectome Workbench's command-line utilities to generate an image
     cmd = 'wb_command -show-scene "{}" {} "{}" {} {}'.format(
-        config.SCENE_FILE, scene, file_out, width, height)
+        scene_file, scene, file_out, width, height)
     # cmd += " >/dev/null 2>&1"
     system(cmd)
 
@@ -122,15 +136,28 @@ def dscalar(file_out, dscalars, orientation='landscape',
     orientation = plots.check_orientation(orientation)
     images.check_dscalars(dscalars)
 
-    temp_image = images.write_dense_image(
-        dscalars=dscalars, fout=None, palette=palette,
+    # Write `dscalars` to a new neuroimaging file in a temp directory & update
+    # color palette
+    temp_dir = tempfile.gettempdir()
+    temp_cifti = join(temp_dir, "ImageDense.dscalar.nii")
+    images.write_dense_image(
+        dscalars=dscalars, fout=temp_cifti, palette=palette,
         palette_params=palette_params)
+
+    # Now copy the scene file & HumanCorticalParcellations directory to the
+    # temp directory as well
+    with ZipFile(config.SCENE_ZIP_FILE, "r") as z:  # unzip to temp dir
+        z.extractall(temp_dir)
+    scene_file = join(temp_dir, "Human.scene")
+    if not exists(scene_file):
+        raise RuntimeError(
+            "scene file was not successfully copied to {}".format(scene_file))
 
     scene, width, height = plots.map_params_to_scene(
         dtype='dscalars', orientation=orientation, hemisphere=hemisphere)
 
     cmd = 'wb_command -show-scene "{}" {} "{}" {} {}'.format(
-        config.SCENE_FILE, scene, file_out, width, height)
+        scene_file, scene, file_out, width, height)
     # cmd += " >/dev/null 2>&1"
     system(cmd)
 

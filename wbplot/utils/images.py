@@ -5,28 +5,10 @@ import nibabel as nib
 from numpy import ndarray
 from .. import constants, config
 from . import plots
-from os import system
-from os.path import join
+from os import system, remove
 from matplotlib import colors as clrs
 from matplotlib import cm
-import tempfile
-from xml import etree
 import xml.etree.cElementTree as eT
-
-
-# def map_parcels_to_dlabels():
-#     """
-#
-#     Returns
-#     -------
-#
-#     """
-#     out = dict.fromkeys(range(360))  # assuming Glasser parcellation
-#     of = nib.load(config.PARCELLATION_FILE)
-#     dlabels = extract_nifti_data(of)
-#     for i in range(360):
-#         out[i] = np.where(dlabels == i+1)[0]
-#     return out
 
 
 def map_unilateral_to_bilateral(pscalars, hemisphere):
@@ -186,37 +168,8 @@ def extract_gifti_data(of):
     return np.array(of.darrays[0].data).squeeze()
 
 
-def create_temp_scene(dtype, image):
-    """
-    Creates a temporary scene file with the input image displayed.
-
-    Parameters
-    ----------
-    dtype : 'parcellated' or 'dense'
-    image : str
-        absolute path to a neuroimaging file
-
-    Returns
-    -------
-    str : path to new scene file
-
-    """
-    # Load data from scene file template
-    tree = eT.parse(config.SCENE_FILE)
-
-    # Overwrite references to the current loaded file
-
-    # Save new scene file in temp directory
-    temp_dir = tempfile.gettempdir()
-    temp_scene = join(temp_dir, "temp.scene")
-
-
-
-    return temp_scene
-
-
 def write_parcellated_image(
-        data, fout=None, hemisphere=None, cmap='magma', vrange=None):
+        data, fout, hemisphere=None, cmap='magma', vrange=None):
     """
     Change the colors for parcels in a dlabel file to illustrate pscalar data.
 
@@ -224,10 +177,9 @@ def write_parcellated_image(
     ----------
     data : numpy.ndarray
         scalar map values
-    fout : str or None, default None
+    fout : str
         absolute path to output neuroimaging file with *.dlabel.nii* extension
-        (if an extension is provided). if None, write to the local system's
-        temporary directory (used for automated plotting only)
+        (if an extension is provided)
     hemisphere : 'left' or 'right' or None, default None
         which hemisphere `pscalars` correspond to. for bilateral data use None
     cmap : str
@@ -237,7 +189,7 @@ def write_parcellated_image(
 
     Returns
     -------
-    str : path to output file
+    None
 
     Notes
     -----
@@ -258,17 +210,10 @@ def write_parcellated_image(
     # Change the colors assigned to each parcel and save to `fout`
     c = Cifti()
     c.set_cmap(data=pscalars_lr, cmap=cmap, vrange=vrange)
-    if fout is not None:
-        c.save(fout)
-    else:  # write to temporary directory
-        temp_dir = tempfile.gettempdir()
-        fout = join(temp_dir, "temp.dlabel.nii")
-        c.save(fout)
-    return fout
+    c.save(fout)
 
 
-def write_dense_image(
-        dscalars, fout=None, palette='magma', palette_params=None):
+def write_dense_image(dscalars, fout, palette='magma', palette_params=None):
     """
     Create a new DSCALAR neuroimaging file.
 
@@ -276,10 +221,9 @@ def write_dense_image(
     ----------
     dscalars : numpy.ndarray
         dense (i.e., whole-brain vertex/voxel-wise) scalar array of length 91282
-    fout : str or None, default None
+    fout : str
         absolute path to output neuroimaging file with *.dscalar.nii* extension
-        (if an extension is provided). if None, write to the local system's
-        temporary directory (used for automated plotting only)
+        (if an extension is provided)
     palette : str, default 'magma'
         name of color palette
     palette_params : dict or None, default None
@@ -289,7 +233,7 @@ def write_dense_image(
 
     Returns
     -------
-    str : path to output file
+    None
 
     Notes
     -----
@@ -337,13 +281,7 @@ def write_dense_image(
     # TODO: add function for users to map from 32k unilateral to CIFTI subset
     # TODO: implement subcortex
 
-    # In case previous call to this function failed
-    dest = constants.DSCALAR_FILE
-    src = constants.DSCALAR_BACKUP
-    system("cp {} {}".format(src, dest))
-
-    # TODO: improve input handling
-    if fout is not None and fout[-12:] != ".dscalar.nii":
+    if fout[-12:] != ".dscalar.nii":  # TODO: improve input handling
         fout += ".dscalar.nii"
 
     new_data = np.copy(dscalars)
@@ -352,19 +290,12 @@ def write_dense_image(
     of = nib.load(constants.DSCALAR_FILE)
     temp_data = np.array(of.get_data())
 
-    # Overwrite with new data
+    # Write new data to file
     data_to_write = new_data.reshape(np.shape(temp_data))
     new_img = nib.Nifti2Image(data_to_write, affine=of.affine, header=of.header)
     prefix = fout.split(".")[0]
-    nib.save(new_img, fout)
-
-    # Save new dscalar file
-    if fout is not None:
-        system("cp {} {}".format(constants.DSCALAR_FILE, fout))
-        cifti_out = fout
-    else:
-        temp_dir = tempfile.gettempdir()
-        cifti_out = join(temp_dir, "temp.dscalar.nii")
+    cifti_palette_input = prefix + "_temp.dscalar.nii"
+    nib.save(new_img, cifti_palette_input)
 
     # Use Workbench's command line utilities to change color palette
     mode = "MODE_AUTO_SCALE"  # default mode (not DMN, haha)
@@ -382,7 +313,7 @@ def write_dense_image(
         if "disp-zero" in args:
             disp_zero = palette_params["disp-zero"]
     cmd = "wb_command -cifti-palette {} {} {}".format(
-        constants.DSCALAR_FILE, mode, cifti_out)
+        cifti_palette_input, mode, fout)
     cmd += " -palette-name {}".format(palette)
     cmd += " -disp-zero {}".format(disp_zero)
     cmd += " -disp-pos {}".format(disp_pos)
@@ -403,9 +334,12 @@ def write_dense_image(
                 cmd += " -{} {} {}".format(k, v[0], v[1])
             else:
                 cmd += " -{} {}".format(k, v)
+
+    # We're ready to change palette and save new file to `fout`
     system(cmd)
 
-    return cifti_out
+    # Remove file which was only used temporarily
+    remove(cifti_palette_input)
 
 
 class Cifti(object):
