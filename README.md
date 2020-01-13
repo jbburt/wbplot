@@ -1,4 +1,3 @@
-#wbplot
 Automated plotting of neuroimaging maps from Python using [Connectome Workbench](https://www.humanconnectome.org/software/connectome-workbench).
 
 This package is intended for users who want to generate images
