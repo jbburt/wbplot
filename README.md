@@ -51,3 +51,4 @@ Change Log
 * 1.0.1 Small error in README.
 * 1.0.2 Error in MANIFEST.in -- not all necessary data files included in build.
 * 1.0.3 Entirely changed the way data are read from and written to, to circumnavigate permissions issues. 
+* 1.0.4 ImageParcellated loaded into dense scenes resulted in error messages printed to console.
