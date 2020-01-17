@@ -5,7 +5,7 @@ import nibabel as nib
 from numpy import ndarray
 from .. import constants, config
 from . import plots
-from os import system, remove
+from os import system, remove, path
 from matplotlib import colors as clrs
 from matplotlib import cm
 import xml.etree.cElementTree as eT

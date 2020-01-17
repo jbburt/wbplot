@@ -1,7 +1,7 @@
 from wbplot.utils import plots, images
-from wbplot import config
+from wbplot import config, constants
 from os import system
-from os.path import join, exists
+from os.path import join, exists, split
 from zipfile import ZipFile
 import tempfile
 
@@ -56,9 +56,17 @@ def pscalar(file_out, pscalars, orientation='landscape',
     # Write `pscalars` to the neuroimaging file which is pre-loaded into the
     # scene file, and update the colors for each parcel using the file metadata
     temp_dir = tempfile.gettempdir()
-    temp_cifti = join(temp_dir, "ImageParcellated.dlabel.nii")
+    temp_cifti = join(temp_dir, split(constants.DLABEL_FILE)[1])
     images.write_parcellated_image(
         data=pscalars, fout=temp_cifti, cmap=cmap, vrange=vrange)
+
+    # This is just to prevent error messages written to console because
+    # ImageDense.dscalar.nii doesn't exist in the scene directory
+    dscalar_out = join(temp_dir, split(constants.DSCALAR_FILE)[1])
+    cmd = "cp {} {}".format(constants.DSCALAR_FILE, dscalar_out)
+    system(cmd)
+    print(dscalar_out)
+    assert exists(dscalar_out)
 
     # Now copy the scene file & HumanCorticalParcellations directory to the
     # temp directory as well
@@ -139,10 +147,18 @@ def dscalar(file_out, dscalars, orientation='landscape',
     # Write `dscalars` to a new neuroimaging file in a temp directory & update
     # color palette
     temp_dir = tempfile.gettempdir()
-    temp_cifti = join(temp_dir, "ImageDense.dscalar.nii")
+    temp_cifti = join(temp_dir, split(constants.DSCALAR_FILE)[1])
     images.write_dense_image(
         dscalars=dscalars, fout=temp_cifti, palette=palette,
         palette_params=palette_params)
+
+    # This is just to prevent error messages written to console because
+    # ImageParcellated.dlabel.nii doesn't exist in the scene directory
+    dlabel_out = join(temp_dir, split(constants.DLABEL_FILE)[1])
+    cmd = "cp {} {}".format(constants.DLABEL_FILE, dlabel_out)
+    system(cmd)
+    print(dlabel_out)
+    assert exists(dlabel_out)
 
     # Now copy the scene file & HumanCorticalParcellations directory to the
     # temp directory as well
