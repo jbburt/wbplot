@@ -2,10 +2,9 @@
 
 import numpy as np
 import nibabel as nib
-from numpy import ndarray
 from .. import constants, config
 from . import plots
-from os import system, remove, path
+from os import system, remove
 from matplotlib import colors as clrs
 from matplotlib import cm
 import xml.etree.cElementTree as eT
@@ -51,13 +50,19 @@ def check_pscalars_unilateral(pscalars):
     -------
     None
 
+    Raises
+    ------
+    TypeError : pscalars is not array_like
+    ValueError : pscalars is not one-dimensional and length 180
+
     """
-    if type(pscalars) is not ndarray:
-        raise RuntimeError("pscalars must be a NumPy array")
-    if pscalars.ndim != 1:
-        raise RuntimeError("pscalars must be one-dimensional")
-    if pscalars.size != 180:
-        raise RuntimeError("unilateral pscalars must be length 180")
+    if not isinstance(pscalars, np.ndarray):
+        raise TypeError(
+            "pscalars: expected array_like, got {}".format(type(pscalars)))
+    if pscalars.ndim != 1 or pscalars.size != 180:
+        e = "pscalars must be one-dimensional and length 180"
+        e += "\npscalars.shape: {}".format(pscalars.shape)
+        raise ValueError(e)
 
 
 def check_pscalars_bilateral(pscalars):
@@ -69,17 +74,19 @@ def check_pscalars_bilateral(pscalars):
     pscalars : numpy.ndarray
         parcellated scalars
 
-    Returns
-    -------
-    None
+    Raises
+    ------
+    TypeError : pscalars is not array_like
+    ValueError : pscalars is not one-dimensional and length 360
 
     """
-    if type(pscalars) is not ndarray:
-        raise RuntimeError("pscalars must be a NumPy array")
-    if pscalars.ndim != 1:
-        raise RuntimeError("pscalars must be one-dimensional")
-    if pscalars.size != 360:
-        raise RuntimeError("bilateral pscalars must be length 360")
+    if not isinstance(pscalars, np.ndarray):
+        raise TypeError(
+            "pscalars: expected array_like, got {}".format(type(pscalars)))
+    if pscalars.ndim != 1 or pscalars.size != 360:
+        e = "pscalars must be one-dimensional and length 180"
+        e += "\npscalars.shape: {}".format(pscalars.shape)
+        raise ValueError(e)
 
 
 def check_dscalars(dscalars):
@@ -96,14 +103,19 @@ def check_dscalars(dscalars):
     -------
     None
 
+    Raises
+    ------
+    TypeError : pscalars is not array_like
+    ValueError : pscalars is not one-dimensional and length 59412
+
     """
-    # TODO: expand to unilateral / bilateral functions
-    if type(dscalars) is not ndarray:
-        raise RuntimeError("dscalars must be a NumPy array")
-    if dscalars.ndim != 1:
-        raise RuntimeError("dscalars must be one-dimensional")
-    if dscalars.size != 59412:
-        raise RuntimeError("bilateral dscalars must be length 59412")
+    if not isinstance(dscalars, np.ndarray):
+        raise TypeError(
+            "dscalars: expected array_like, got {}".format(type(dscalars)))
+    if dscalars.ndim != 1 or dscalars.size != 180:
+        e = "dscalars must be one-dimensional and length 59412"
+        e += "\ndscalars.shape: {}".format(dscalars.shape)
+        raise ValueError(e)
 
 
 def check_hemisphere(pscalars, hemisphere):
@@ -121,13 +133,18 @@ def check_hemisphere(pscalars, hemisphere):
     -------
     'left' or 'right' or None
 
+    Raises
+    ------
+    RuntimeError : pscalars is not length-360 but hemisphere not indicated
+    ValueError : invalid hemisphere argument
+
     """
     if pscalars.size != 360 and hemisphere is None:
         raise RuntimeError(
             "you must indicate which hemisphere these pscalars correspond to")
     options = ['left', 'l', 'L', 'right', 'r', 'R', None, 'lr', 'LR']
     if hemisphere not in options:
-        raise ValueError("{} if not a valid hemisphere".format(hemisphere))
+        raise ValueError("{} is not a valid hemisphere".format(hemisphere))
     if hemisphere in ['left', 'l', 'L']:
         return 'left'
     if hemisphere in ['right', 'r', 'R']:
@@ -277,6 +294,10 @@ def write_dense_image(dscalars, fout, palette='magma', palette_params=None):
     where pos_min, pos_max, neg_min, and neg_max are the same as before but
     expressed as *percentages* of the positive and negative values
 
+    Raises
+    ------
+    ValueError : palette_params contains an invalid key,value pair
+
     """
     # TODO: add function for users to map from 32k unilateral to CIFTI subset
     # TODO: implement subcortex
@@ -328,7 +349,7 @@ def write_dense_image(dscalars, fout, palette='magma', palette_params=None):
                 continue
             if hasattr(v, '__iter__'):
                 if len(v) != 2:
-                    raise RuntimeError(
+                    raise ValueError(
                         "palette params must be a dict with values which are "
                         "either strings, numbers, or tuples")
                 cmd += " -{} {} {}".format(k, v[0], v[1])
