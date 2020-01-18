@@ -53,3 +53,5 @@ Change Log
 * 1.0.3 Entirely changed the way data are read from and written to, to circumnavigate permissions issues. 
 * 1.0.4 ImageParcellated loaded into dense scenes resulted in error messages printed to console.
 * 1.0.5 Last patch didn't fix the problem.
+* 1.0.6 Added errors raised to docstrings and cleaned up a few files.
+* 1.0.7 Fixed type checking bug in `images` module

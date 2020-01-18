@@ -50,6 +50,10 @@ def check_cmap_plt(cmap):
     -------
     cmap : str
 
+    Raises
+    ------
+    ValueError : colormap is not available matplotlib
+
     """
     try:
         _ = cm.get_cmap(cmap)
@@ -72,9 +76,13 @@ def check_cmap_wb(cmap):
     -------
     cmap : str
 
+    Raises
+    ------
+    ValueError : colormap is not available in Connectome Workbench
+
     """
     if cmap not in constants.CMAPS:
-        raise RuntimeError(
+        raise ValueError(
             '"{}" is not a colormap provided by Connectome Workbench.'.format(
                 cmap))
     return cmap
@@ -94,15 +102,19 @@ def check_vrange(vrange):
     -------
     vrange : tuple
 
+    Raises
+    ------
+    ValueError : vrange is not length-2 iterable obj with vrange[0] > vrange[1]
+
     """
     if type(vrange) is not tuple:
         if not hasattr(vrange, "__iter__"):
-            raise RuntimeError(
+            raise ValueError(
                 'if vrange is not a tuple, it must be an iterable object')
         if len(vrange) != 2:
-            raise RuntimeError("vrange must contain only two elements")
+            raise ValueError("vrange must contain only two elements")
     if vrange[0] >= vrange[1]:
-        raise RuntimeError("vrange[0] must be strictly less than vrange[1]")
+        raise ValueError("vrange[0] must be strictly less than vrange[1]")
     return tuple(list(vrange))
 
 
@@ -127,6 +139,10 @@ def map_params_to_scene(dtype, orientation, hemisphere):
         the width of the output image, in pixels
     height : int
         the height of the output image, in pixels
+
+    Raises
+    ------
+    ValueError : invalid input argument provided
 
     """
     if dtype == 'pscalars' and hemisphere is None:
@@ -178,8 +194,7 @@ def map_params_to_scene(dtype, orientation, hemisphere):
         width, height = constants.PORTRAIT_SIZE
 
     else:
-        raise RuntimeError(
-            "check that your orientation and hemisphere arguments are valid")
+        raise ValueError("one or more input arguments is invalid")
     return scene, width, height
 
 
@@ -196,81 +211,15 @@ def check_orientation(orientation):
     -------
     str
 
+    Raises
+    ------
+    ValueError : invalid orientation argument provided
+
     """
     if orientation not in ['landscape', 'portrait', 'l', 'p']:
-        raise RuntimeError("orientation must be landscape or portrait")
+        raise ValueError("orientation must be landscape or portrait")
     if orientation == 'l':
         return 'landscape'
     elif orientation == 'p':
         return 'portrait'
     return orientation
-
-
-# TODO: remove this once you're sure you don't want to keep it
-# def wb_cbar(cax, vrange, cmap, orientation='horizontal'):
-#     """
-#
-#     Parameters
-#     ----------
-#     cax
-#     vrange
-#     cmap
-#     orientation : 'horizontal' or 'vertical'
-#         the orientation of the colorbar
-#
-#     Returns
-#     -------
-#     cbar : :class:~`colorbar.ColorbarBase` instance
-#     """
-#     cmap = check_cmap_plt(cmap)
-#     cnorm = colors.Normalize(vmin=vrange[0], vmax=vrange[1])
-#     cmap = plt.get_cmap(cmap)
-#     cbar = colorbar.ColorbarBase(
-#         cax, cmap=cmap, norm=cnorm, orientation=orientation)
-#     return cbar
-
-
-# def add_cmap(im, ax, ticks=None, top=True, pad=0.05, size=10, extend=None,
-#              lw=None):
-#     """
-#
-#
-#     Parameters
-#     ----------
-#     im
-#     ax
-#     ticks
-#     top
-#     pad
-#     size
-#     extend
-#     lw
-#
-#     Returns
-#     -------
-#
-#     """
-#     divider = make_axes_locatable(ax)
-#     if top:
-#         cax = divider.append_axes("top", size="{}%%".format(size), pad=pad)
-#         if extend is not None:
-#             cbar = plt.colorbar(
-#                 im, cax=cax, orientation='horizontal', extend=extend)
-#         else:
-#             cbar = plt.colorbar(im, cax=cax, orientation='horizontal')
-#         cbar.ax.xaxis.set_ticks_position('top')
-#         cbar.ax.xaxis.set_label_position('top')
-#     else:
-#         cax = divider.append_axes("right", size="{}%%".format(size), pad=pad)
-#         if extend is not None:
-#             cbar = plt.colorbar(
-#                 im, cax=cax, orientation='vertical', extend=extend)
-#         else:
-#             cbar = plt.colorbar(im, cax=cax, orientation='vertical')
-#     if ticks is not None:
-#         cbar.set_ticks(ticks)
-#     if lw is None:
-#         cbar.outline.set_visible(False)
-#     elif lw > 0:
-#         cbar.outline.set_linewidth(lw)
-#     return cax

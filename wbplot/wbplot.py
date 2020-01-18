@@ -34,6 +34,10 @@ def pscalar(file_out, pscalars, orientation='landscape',
     -------
     None
 
+    Raises
+    ------
+    RuntimeError : scene file was not copied to temp directory
+
     """
 
     # Check file extension
@@ -65,8 +69,6 @@ def pscalar(file_out, pscalars, orientation='landscape',
     dscalar_out = join(temp_dir, split(constants.DSCALAR_FILE)[1])
     cmd = "cp {} {}".format(constants.DSCALAR_FILE, dscalar_out)
     system(cmd)
-    print(dscalar_out)
-    assert exists(dscalar_out)
 
     # Now copy the scene file & HumanCorticalParcellations directory to the
     # temp directory as well
@@ -138,6 +140,10 @@ def dscalar(file_out, dscalars, orientation='landscape',
     arguments pos-percent, pos-user, neg-percent, & neg-user are currently not
     supported.
 
+    Raises
+    ------
+    RuntimeError : scene file was not copied to temp directory
+
     """
 
     palette = plots.check_cmap_wb(palette)
@@ -157,8 +163,6 @@ def dscalar(file_out, dscalars, orientation='landscape',
     dlabel_out = join(temp_dir, split(constants.DLABEL_FILE)[1])
     cmd = "cp {} {}".format(constants.DLABEL_FILE, dlabel_out)
     system(cmd)
-    print(dlabel_out)
-    assert exists(dlabel_out)
 
     # Now copy the scene file & HumanCorticalParcellations directory to the
     # temp directory as well
