@@ -112,7 +112,7 @@ def check_dscalars(dscalars):
     if not isinstance(dscalars, np.ndarray):
         raise TypeError(
             "dscalars: expected array_like, got {}".format(type(dscalars)))
-    if dscalars.ndim != 1 or dscalars.size != 180:
+    if dscalars.ndim != 1 or dscalars.size != 59412:
         e = "dscalars must be one-dimensional and length 59412"
         e += "\ndscalars.shape: {}".format(dscalars.shape)
         raise ValueError(e)

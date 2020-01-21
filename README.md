@@ -56,3 +56,4 @@ Change Log
 * 1.0.6 Added errors raised to docstrings and cleaned up a few files.
 * 1.0.7 Fixed type checking bug in `images` module
 * 1.0.8 Fixed it for real now.
+* 1.0.9 Fixed bug in images.check_dscalars().
