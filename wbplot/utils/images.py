@@ -26,7 +26,7 @@ def map_unilateral_to_bilateral(pscalars, hemisphere):
     numpy.ndarray
 
     """
-    hemisphere = check_hemisphere(pscalars=pscalars, hemisphere=hemisphere)
+    hemisphere = check_parcel_hemi(pscalars=pscalars, hemisphere=hemisphere)
     if hemisphere is None:
         return pscalars
     pscalars_lr = np.zeros(360)
@@ -118,7 +118,7 @@ def check_dscalars(dscalars):
         raise ValueError(e)
 
 
-def check_hemisphere(pscalars, hemisphere):
+def check_parcel_hemi(pscalars, hemisphere):
     """
     Check hemisphere argument for package compatibility.
 
@@ -142,6 +142,35 @@ def check_hemisphere(pscalars, hemisphere):
     if pscalars.size != 360 and hemisphere is None:
         raise RuntimeError(
             "you must indicate which hemisphere these pscalars correspond to")
+    options = ['left', 'l', 'L', 'right', 'r', 'R', None, 'lr', 'LR']
+    if hemisphere not in options:
+        raise ValueError("{} is not a valid hemisphere".format(hemisphere))
+    if hemisphere in ['left', 'l', 'L']:
+        return 'left'
+    if hemisphere in ['right', 'r', 'R']:
+        return 'right'
+    if hemisphere in ['None', 'lr', 'LR']:
+        return None
+
+
+def check_dense_hemi(hemisphere):
+    """
+    Check hemisphere argument for compatibility.
+
+    Parameters
+    ----------
+    hemisphere : 'left' or 'right' or None
+        if bilateral, use None
+
+    Returns
+    -------
+    'left' or 'right' or None
+
+    Raises
+    ------
+    ValueError : invalid hemisphere argument
+
+    """
     options = ['left', 'l', 'L', 'right', 'r', 'R', None, 'lr', 'LR']
     if hemisphere not in options:
         raise ValueError("{} is not a valid hemisphere".format(hemisphere))
@@ -219,7 +248,7 @@ def write_parcellated_image(
     """
 
     # Check provided inputs and pad contralateral hemisphere with 0 if necessary
-    check_hemisphere(pscalars=data, hemisphere=hemisphere)
+    check_parcel_hemi(pscalars=data, hemisphere=hemisphere)
     cmap = plots.check_cmap_plt(cmap)
     pscalars_lr = map_unilateral_to_bilateral(
         pscalars=data, hemisphere=hemisphere)

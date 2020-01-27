@@ -47,13 +47,14 @@ Change Log
 ==========
 ---
 
-* 1.0 Initial release.
-* 1.0.1 Small error in README.
-* 1.0.2 Error in MANIFEST.in -- not all necessary data files included in build.
-* 1.0.3 Entirely changed the way data are read from and written to, to circumnavigate permissions issues. 
-* 1.0.4 ImageParcellated loaded into dense scenes resulted in error messages printed to console.
-* 1.0.5 Last patch didn't fix the problem.
-* 1.0.6 Added errors raised to docstrings and cleaned up a few files.
-* 1.0.7 Fixed type checking bug in `images` module
-* 1.0.8 Fixed it for real now.
+* 1.0.10 Patched keyword argument bug in wbplot.dscalar.
 * 1.0.9 Fixed bug in images.check_dscalars().
+* 1.0.8 Fixed it for real now.
+* 1.0.7 Fixed type checking bug in `images` module.
+* 1.0.6 Added errors raised to docstrings and cleaned up a few files.
+* 1.0.5 Last patch didn't fix the problem.
+* 1.0.4 ImageParcellated loaded into dense scenes resulted in error messages printed to console.
+* 1.0.3 Entirely changed the way data are read from and written to, to circumnavigate permissions issues. 
+* 1.0.2 Error in MANIFEST.in -- not all necessary data files included in build.
+* 1.0.1 Small error in README.
+* 1.0 Initial release.

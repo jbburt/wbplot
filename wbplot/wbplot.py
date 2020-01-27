@@ -47,7 +47,7 @@ def pscalar(file_out, pscalars, orientation='landscape',
     # Perform checks on inputs
     cmap = plots.check_cmap_plt(cmap)
     orientation = plots.check_orientation(orientation)
-    hemisphere = images.check_hemisphere(pscalars, hemisphere)
+    hemisphere = images.check_parcel_hemi(pscalars, hemisphere)
     if hemisphere is not None:
         images.check_pscalars_unilateral(pscalars)
     else:
@@ -146,6 +146,7 @@ def dscalar(file_out, dscalars, orientation='landscape',
 
     """
 
+    hemisphere = images.check_dense_hemi(hemisphere)
     palette = plots.check_cmap_wb(palette)
     orientation = plots.check_orientation(orientation)
     images.check_dscalars(dscalars)
