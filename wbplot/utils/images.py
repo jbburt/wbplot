@@ -8,6 +8,7 @@ from os import system, remove
 from matplotlib import colors as clrs
 from matplotlib import cm
 import xml.etree.cElementTree as eT
+from nibabel.cifti2.parse_cifti2 import Cifti2Parser
 
 
 def map_unilateral_to_bilateral(pscalars, hemisphere):
@@ -195,7 +196,7 @@ def extract_nifti_data(of):
     data : numpy.ndarray
 
     """
-    return np.array(of.get_data()).squeeze()
+    return np.asanyarray(of.dataobj).squeeze()
 
 
 def extract_gifti_data(of):
@@ -211,7 +212,7 @@ def extract_gifti_data(of):
     data : numpy.ndarray
 
     """
-    return np.array(of.darrays[0].data).squeeze()
+    return np.asanyarray(of.darrays[0].data).squeeze()
 
 
 def write_parcellated_image(
@@ -338,11 +339,12 @@ def write_dense_image(dscalars, fout, palette='magma', palette_params=None):
 
     # Load template dscalar file
     of = nib.load(constants.DSCALAR_FILE)
-    temp_data = np.array(of.get_data())
+    temp_data = np.asanyarray(of.dataobj)
 
     # Write new data to file
     data_to_write = new_data.reshape(np.shape(temp_data))
-    new_img = nib.Nifti2Image(data_to_write, affine=of.affine, header=of.header)
+    new_img = nib.Cifti2Image(
+        dataobj=data_to_write, header=of.header, nifti_header=of.nifti_header)
     prefix = fout.split(".")[0]
     cifti_palette_input = prefix + "_temp.dscalar.nii"
     nib.save(new_img, cifti_palette_input)
@@ -400,12 +402,12 @@ class Cifti(object):
     """
 
     def __init__(self):
-
         of = nib.load(config.PARCELLATION_FILE)  # must be a DLABEL file!!
-        self.data = of.get_data()
-        self.affine = of.affine
+        self.data = np.asanyarray(of.dataobj)
         self.header = of.header
-        self.extensions = eT.fromstring(self.header.extensions[0].get_content())
+        self.nifti_header = of.nifti_header
+        self.extensions = eT.fromstring(
+            self.nifti_header.extensions[0].get_content().to_xml())
         self.vrange = None
         self.ischanged = False
 
@@ -449,20 +451,22 @@ class Cifti(object):
             colors = np.array([mappable(d) for d in data])
 
         # Update file header metadata
-        for ii in range(1, len(self.extensions[0][1][0][1])):
-            self.extensions[0][1][0][1][ii].set(
+        for ii in range(1, len(self.extensions[0][1][0][0])):
+            self.extensions[0][1][0][0][ii].set(
                 'Red', str(colors[ii - 1, 0]))
-            self.extensions[0][1][0][1][ii].set(
+            self.extensions[0][1][0][0][ii].set(
                 'Green', str(colors[ii - 1, 1]))
-            self.extensions[0][1][0][1][ii].set(
+            self.extensions[0][1][0][0][ii].set(
                 'Blue', str(colors[ii - 1, 2]))
-            self.extensions[0][1][0][1][ii].set(
+            self.extensions[0][1][0][0][ii].set(
                 'Alpha', str(colors[ii - 1, 3]))
         self.ischanged = True
 
     # Write to class attribute self.header
     def write_extensions(self):
-        self.header.extensions[0]._content = eT.tostring(self.extensions)
+        cp = Cifti2Parser()
+        cp.parse(string=eT.tostring(self.extensions))
+        self.nifti_header.extensions[0]._content = cp.header
         # NOTE if _content is changed to content, this method will break
 
     def save(self, fout):
@@ -483,8 +487,8 @@ class Cifti(object):
             self.write_extensions()
         if fout[-11:] != ".dlabel.nii":  # TODO: improve input handling
             fout += ".dlabel.nii"
-        new_img = nib.Nifti2Image(
-            self.data, affine=self.affine, header=self.header)
+        new_img = nib.Cifti2Image(
+            self.data, header=self.header, nifti_header=self.nifti_header)
         nib.save(new_img, fout)
 
 

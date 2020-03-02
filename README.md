@@ -39,7 +39,7 @@ Notes
 HCP MMP1.0 parcellation. Dense data must be
 registered to a standard 32k surface mesh. 
 - Down the line I'd be open to adding subcortical
-support and other functionality if anyone ever actually uses this package.
+support and other functionality if people are interested.
 - More detailed explanations of the functionality can be found in the scripts in the `examples` directory. 
 
 
@@ -47,6 +47,7 @@ Change Log
 ==========
 ---
 
+* 1.0.11 Dependency version updates.
 * 1.0.10 Patched keyword argument bug in wbplot.dscalar.
 * 1.0.9 Fixed bug in images.check_dscalars().
 * 1.0.8 Fixed it for real now.
