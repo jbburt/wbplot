@@ -3,11 +3,11 @@ from setuptools import setup, find_packages
 with open("README.md", "r") as f:
     readme = f.read()
 
-requirements = ["numpy", "pillow", "matplotlib", "nibabel==2.1.0"]
+requirements = ["numpy", "pillow", "matplotlib", "nibabel"]
 
 setup(
     name="wbplot",
-    version="1.0.9",
+    version="1.0.11",
     author="Joshua Burt",
     author_email="joshua.burt@yale.edu",
     include_package_data=True,
