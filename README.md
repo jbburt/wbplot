@@ -47,6 +47,7 @@ Change Log
 ==========
 ---
 
+* 1.0.12 Fixed bug in list of available colormaps; ROY-BIG-BL and videen_style are now supported.
 * 1.0.11 Dependency version updates.
 * 1.0.10 Patched keyword argument bug in wbplot.dscalar.
 * 1.0.9 Fixed bug in images.check_dscalars().

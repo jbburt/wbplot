@@ -9,7 +9,7 @@ DSCALAR_BACKUP = join(DATA_DIR, ".ImageDense.dscalar.nii")
 SCENE_FILE = join(DATA_DIR, "Human.scene")
 
 # Available Workbench color palettes
-CMAPS = ['ROY-BIG-BL'
+CMAPS = ['ROY-BIG-BL',
          'videen_style',
          'Gray_Interp_Positive',
          'Gray_Interp',
