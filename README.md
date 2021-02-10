@@ -47,7 +47,8 @@ Change Log
 ==========
 ---
 
-* 1.0.13 Attempted to fix a bug which threw an error on Windows machines. 
+* 1.0.14 Fixed an issue that caused  `wbplot` to break when using `nibabel>=3.2.0`.
+* 1.0.13 Attempted to fix a bug which threw an error on Windows machines. FOLLOW-UP: Due to Connectome Workbench itself, Windows is currently NOT SUPPORTED.
 * 1.0.12 Fixed bug in list of available colormaps; ROY-BIG-BL and videen_style are now supported.
 * 1.0.11 Dependency version updates.
 * 1.0.10 Patched keyword argument bug in wbplot.dscalar.

@@ -68,10 +68,10 @@ def pscalar(file_out, pscalars, orientation='landscape',
     # This is just to prevent error messages written to console because
     # ImageDense.dscalar.nii doesn't exist in the scene directory
     dscalar_out = join(temp_dir, split(constants.DSCALAR_FILE)[1])
-    if 'windows' in platform.system().lower():
-        cmd = f'xcopy /I {constants.DSCALAR_FILE} {dscalar_out}'
-    else:
-        cmd = "cp {} {}".format(constants.DSCALAR_FILE, dscalar_out)
+    # if 'windows' in platform.system().lower():
+    #     cmd = f'xcopy /I {constants.DSCALAR_FILE} {dscalar_out}'
+    # else:
+    cmd = "cp {} {}".format(constants.DSCALAR_FILE, dscalar_out)
     system(cmd)
 
     # Now copy the scene file & HumanCorticalParcellations directory to the

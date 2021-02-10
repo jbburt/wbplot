@@ -406,8 +406,9 @@ class Cifti(object):
         self.data = np.asanyarray(of.dataobj)
         self.header = of.header
         self.nifti_header = of.nifti_header
-        self.extensions = eT.fromstring(
-            self.nifti_header.extensions[0].get_content().to_xml())
+        # self.extensions = eT.fromstring(  BROKEN AS OF NIBABEL 3.2
+        #     self.nifti_header.extensions[0].get_content().to_xml())
+        self.tree = eT.fromstring(self.header.to_xml())
         self.vrange = None
         self.ischanged = False
 
@@ -451,23 +452,16 @@ class Cifti(object):
             colors = np.array([mappable(d) for d in data])
 
         # Update file header metadata
-        for ii in range(1, len(self.extensions[0][1][0][0])):
-            self.extensions[0][1][0][0][ii].set(
+        for ii in range(1, len(self.tree[0][1][0][0])):
+            self.tree[0][1][0][0][ii].set(
                 'Red', str(colors[ii - 1, 0]))
-            self.extensions[0][1][0][0][ii].set(
+            self.tree[0][1][0][0][ii].set(
                 'Green', str(colors[ii - 1, 1]))
-            self.extensions[0][1][0][0][ii].set(
+            self.tree[0][1][0][0][ii].set(
                 'Blue', str(colors[ii - 1, 2]))
-            self.extensions[0][1][0][0][ii].set(
+            self.tree[0][1][0][0][ii].set(
                 'Alpha', str(colors[ii - 1, 3]))
         self.ischanged = True
-
-    # Write to class attribute self.header
-    def write_extensions(self):
-        cp = Cifti2Parser()
-        cp.parse(string=eT.tostring(self.extensions))
-        self.nifti_header.extensions[0]._content = cp.header
-        # NOTE if _content is changed to content, this method will break
 
     def save(self, fout):
         """
@@ -484,11 +478,15 @@ class Cifti(object):
 
         """
         if self.ischanged:
-            self.write_extensions()
+            cp = Cifti2Parser()
+            cp.parse(string=eT.tostring(self.tree))
+            header = cp.header
+        else:
+            header = self.header
         if fout[-11:] != ".dlabel.nii":  # TODO: improve input handling
             fout += ".dlabel.nii"
         new_img = nib.Cifti2Image(
-            self.data, header=self.header, nifti_header=self.nifti_header)
+            self.data, header=header, nifti_header=self.nifti_header)
         nib.save(new_img, fout)
 
 

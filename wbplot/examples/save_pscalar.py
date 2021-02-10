@@ -73,3 +73,5 @@ pscalar(
 # If you just want to write your data to a neuroimaging file (and open it in
 # Workbench yourself), see the docs for
 # `wbplot.utils.images.write_parcellated_image`.
+
+pscalar('test.png', pscalars=np.random.randn(360), hemisphere=None)
