@@ -1,4 +1,4 @@
-pip==20.0.2
+pip==21.1
 wheel==0.34.2
 numpy==1.18.1
 nibabel==3.2.1
